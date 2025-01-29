@@ -2,8 +2,6 @@ import 'package:base_app/constants/AppPagePath.dart';
 import 'package:base_app/services/SharedPrefService.dart';
 import 'package:base_app/view/HomePage.dart';
 import 'package:base_app/view/SplashPage.dart';
-import 'package:base_app/view/auth/CreatePage.dart';
-import 'package:base_app/view/auth/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'constants/AppLifecycleObserver.dart';
@@ -64,8 +62,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       routes: {
         AppPagePath.homePage.pathString: (context) => const HomePage(),
         AppPagePath.splashPage.pathString: (context) => const SplashPage(),
-        AppPagePath.loginPage.pathString: (context) => const LoginPage(),
-        AppPagePath.createPage.pathString: (context) => const CreatePage(),
       },
     );
   }

@@ -25,6 +25,13 @@ dependencies:
   cached_network_image: ^3.4.1
   shared_preferences: ^2.3.2
   package_info_plus: ^8.1.0
+  contacts_service: ^0.6.3
+  photo_manager: ^3.6.4
+  telephony: ^0.2.0
+  mailer: ^6.4.1
+  permission_handler: ^11.3.1
+  archive: ^4.0.2
+  url_launcher: ^6.3.1
 
 
 dev_dependencies:
