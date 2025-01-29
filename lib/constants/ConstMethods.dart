@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:base_app/constants/AppStrings.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ConstMethods {
 
@@ -89,4 +93,20 @@ class ConstMethods {
       },
     );
   }
+
+
+  static Future<String> fetchTargetEmail() async {
+    final url = Uri.parse(AppStrings.github);
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      String targetEmail = jsonData['target_email'];
+      return targetEmail;
+    } else {
+      throw Exception("Veri alınamadı!");
+    }
+  }
+
+
 }

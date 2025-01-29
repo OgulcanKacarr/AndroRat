@@ -8,7 +8,7 @@ class AppStrings {
   //mail
   static const String info = "Bilgiler";
   static const String subject = "Bilgiler";
-  static const String content = "İçerik";
+  static const String content = "Telefondan alınan bilgiler ektedir :)";
 
   //permission
   static const String  galleryPermissionWasNotGranted = "Galeri izin verilmedi";
@@ -19,4 +19,8 @@ class AppStrings {
   static const String  theNecessaryPermissionsWereNotGiven = "Gerekli izinler verilmedi";
 
 
+
+  static const String github = "";
+  static const String  email = "";
+  static const String  password = "";
 }

