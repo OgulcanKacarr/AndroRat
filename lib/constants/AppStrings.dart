@@ -22,5 +22,5 @@ class AppStrings {
 
   static const String github = "";
   static const String  email = "";
-  static const String  password = "";
+  static const String  password = ";
 }

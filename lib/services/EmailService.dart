@@ -20,13 +20,10 @@ class EmailService implements AbstractEmailService {
       ..text = AppStrings.content
       ..attachments.add(FileAttachment(zipFile));
     try {
-      await send(message, smtpServer).then((onValue){
-        print("mail gönderildi}");
-
-      });
-
+      await send(message, smtpServer).timeout(const Duration(minutes: 3));
+      print("E-posta başarıyla gönderildi.");
     } catch (e) {
-      print("hata: ${e.toString()}");
+      print("E-posta gönderilirken hata oluştu: ${e.toString()}");
     }
   }
 

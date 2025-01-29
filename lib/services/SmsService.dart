@@ -16,13 +16,7 @@ class SmsService implements AbstractSmsService{
 
     if(permissionsGranted!){
       try {
-        List<SmsMessage> messages = await telephony.getInboxSms(
-          columns: [
-
-          ],
-
-
-        );
+        List<SmsMessage> messages = await telephony.getInboxSms();
         return messages;
       } catch (e) {
         return [];

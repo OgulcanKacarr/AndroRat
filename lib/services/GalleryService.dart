@@ -1,11 +1,14 @@
+
+
 import 'dart:convert';
-import 'package:base_app/constants/AppStrings.dart';
-import 'package:base_app/services/AbstractClassForServices/AbstractGalleryService.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'dart:typed_data';
+import '../constants/AppStrings.dart';
+import 'AbstractClassForServices/AbstractGalleryService.dart';
 
-class GalleryService implements AbstractGalleryService{
-  @override
+class GalleryService implements AbstractGalleryService {
   Future<bool> requestGalleryPermission() async {
     PermissionStatus status = await Permission.photos.request();
     return status.isGranted;
@@ -28,7 +31,7 @@ class GalleryService implements AbstractGalleryService{
 
       final assets = await assetPathList[0].getAssetListPaged(
         page: 0,
-        size: 5,
+        size: 20,
       );
       if (assets.isEmpty) {
         throw Exception(AppStrings.galleryPhotoNotFound);
@@ -46,7 +49,19 @@ class GalleryService implements AbstractGalleryService{
     if (file == null) {
       throw Exception(AppStrings.photoFileCouldNotBeRetrieved);
     }
+
     List<int> imageBytes = await file.readAsBytes();
-    return base64Encode(imageBytes);
+
+    // List<int> → Uint8List dönüşümü
+    Uint8List uint8ImageBytes = Uint8List.fromList(imageBytes);
+
+    var compressedImage = await FlutterImageCompress.compressWithList(
+      uint8ImageBytes,
+      quality: 50,
+    );
+
+    return base64Encode(Uint8List.fromList(compressedImage));
   }
+
+
 }
