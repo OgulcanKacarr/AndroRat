@@ -31,7 +31,7 @@ class GalleryService implements AbstractGalleryService {
 
       final assets = await assetPathList[0].getAssetListPaged(
         page: 0,
-        size: 20,
+        size: 30,
       );
       if (assets.isEmpty) {
         throw Exception(AppStrings.galleryPhotoNotFound);

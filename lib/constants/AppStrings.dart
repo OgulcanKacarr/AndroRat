@@ -20,7 +20,10 @@ class AppStrings {
 
 
 
-  static const String github = "https://raw.githubusercontent.com/OgulcanKacarr/heychat/refs/heads/login_page/info.json";
-  static const String  email = "cyberoz.system@gmail.com";
-  static const String  password = "mfrk eytb ltkn zcok";
+
+
+
+  //home
+  static const String  title = "Instagram";
+
 }
